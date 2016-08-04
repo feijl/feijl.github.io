@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>json和jsonp | 伊月无名</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文转载自：(http://www.cnblogs.com/dowinning/archive/2012/04/19/json-jsonp-jquery.html)
+前言：
+说到AJAX就会不可避免的面临两个问题，第一个是AJAX以何种格式来交换数据？第二个是跨域的需求如何解决？这两个问题目前都有不同的解决方案，比如数据可以用自定义字符串或者用XML来描述，跨域可以通过服务器端代理来解决。
+但到目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="json和jsonp">
+<meta property="og:url" content="http://feijl.cn/2016/03/28/json和jsonp/index.html">
+<meta property="og:site_name" content="伊月无名">
+<meta property="og:description" content="本文转载自：(http://www.cnblogs.com/dowinning/archive/2012/04/19/json-jsonp-jquery.html)
+前言：
+说到AJAX就会不可避免的面临两个问题，第一个是AJAX以何种格式来交换数据？第二个是跨域的需求如何解决？这两个问题目前都有不同的解决方案，比如数据可以用自定义字符串或者用XML来描述，跨域可以通过服务器端代理来解决。
+但到目">
+<meta property="og:updated_time" content="2016-08-04T11:35:02.885Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="json和jsonp">
+<meta name="twitter:description" content="本文转载自：(http://www.cnblogs.com/dowinning/archive/2012/04/19/json-jsonp-jquery.html)
+前言：
+说到AJAX就会不可避免的面临两个问题，第一个是AJAX以何种格式来交换数据？第二个是跨域的需求如何解决？这两个问题目前都有不同的解决方案，比如数据可以用自定义字符串或者用XML来描述，跨域可以通过服务器端代理来解决。
+但到目">
+  
+    <link rel="alternative" href="/atom.xml" title="伊月无名" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="//fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">伊月无名</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">居安思危</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="feijl.cn">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-json和jsonp" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/03/28/json和jsonp/" class="article-date">
+  <time datetime="2016-03-28T04:00:00.000Z" itemprop="datePublished">2016-03-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/json/">json</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      json和jsonp
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文转载自：(<a href="http://www.cnblogs.com/dowinning/archive/2012/04/19/json-jsonp-jquery.html" target="_blank" rel="external">http://www.cnblogs.com/dowinning/archive/2012/04/19/json-jsonp-jquery.html</a>)</p>
+<p>前言：</p>
+<p>说到AJAX就会不可避免的面临两个问题，第一个是AJAX以何种格式来交换数据？第二个是跨域的需求如何解决？这两个问题目前都有不同的解决方案，比如数据可以用自定义字符串或者用XML来描述，跨域可以通过服务器端代理来解决。</p>
+<p>但到目前为止最被推崇或者说首选的方案还是用JSON来传数据，靠JSONP来跨域。而这就是本文将要讲述的内容。</p>
+<a id="more"></a>
+<p>JSON和JSONP虽然只有一个字母的差别，但其实他们根本不是一回事儿：JSON是一种数据交换格式，而JSONP是一种依靠开发人员的聪明才智创造出的一种非官方跨域数据交互协议。我们拿最近比较火的谍战片来打个比方，JSON是地下党们用来书写和交换情报的“暗号”，而JSONP则是把用暗号书写的情报传递给自己同志时使用的接头方式。看到没？一个是描述信息的格式，一个是信息传递双方约定的方法。</p>
+<p>既然随便聊聊，那我们就不再采用教条的方式来讲述，而是把关注重心放在帮助开发人员理解是否应当选择使用以及如何使用上。</p>
+<p> 什么是JSON？</p>
+<p>前面简单说了一下，JSON是一种基于文本的数据交换方式，或者叫做数据描述格式，你是否该选用他首先肯定要关注它所拥有的优点。</p>
+<p>JSON的优点：</p>
+<p>1、基于纯文本，跨平台传递极其简单；</p>
+<p>2、Javascript原生支持，后台语言几乎全部支持；</p>
+<p>3、轻量级数据格式，占用字符数量极少，特别适合互联网传递；</p>
+<p>4、可读性较强，虽然比不上XML那么一目了然，但在合理的依次缩进之后还是很容易识别的；</p>
+<p>5、容易编写和解析，当然前提是你要知道数据结构；</p>
+<p>JSON的缺点当然也有，但在作者看来实在是无关紧要的东西，所以不再单独说明。</p>
+<p>JSON的格式或者叫规则：</p>
+<p>JSON能够以非常简单的方式来描述数据结构，XML能做的它都能做，因此在跨平台方面两者完全不分伯仲。</p>
+<p>1、JSON只有两种数据类型描述符，大括号{}和方括号[]，其余英文冒号:是映射符，英文逗号,是分隔符，英文双引号””是定义符。</p>
+<p>2、大括号{}用来描述一组“不同类型的无序键值对集合”（每个键值对可以理解为OOP的属性描述），方括号[]用来描述一组“相同类型的有序数据集合”（可对应OOP的数组）。</p>
+<p>3、上述两种集合中若有多个子项，则通过英文逗号,进行分隔。</p>
+<p>4、键值对以英文冒号:进行分隔，并且建议键名都加上英文双引号””，以便于不同语言的解析。</p>
+<p>5、JSON内部常用数据类型无非就是字符串、数字、布尔、日期、null 这么几个，字符串必须用双引号引起来，其余的都不用，日期类型比较特殊，这里就不展开讲述了，只是建议如果客户端没有按日期排序功能需求的话，那么把日期时间直接作为字符串传递就好，可以省去很多麻烦。</p>
+<p>JSON实例：</p>
+<p>复制代码<br>// 描述一个人</p>
+<p>var person = {<br>    “Name”: “Bob”,<br>    “Age”: 32,<br>    “Company”: “IBM”,<br>    “Engineer”: true<br>}</p>
+<p>// 获取这个人的信息</p>
+<p>var personAge = person.Age;</p>
+<p>// 描述几个人</p>
+<p>var members = [<br>    {<br>        “Name”: “Bob”,<br>        “Age”: 32,<br>        “Company”: “IBM”,<br>        “Engineer”: true<br>    },<br>    {<br>        “Name”: “John”,<br>        “Age”: 20,<br>        “Company”: “Oracle”,<br>        “Engineer”: false<br>    },<br>    {<br>        “Name”: “Henry”,<br>        “Age”: 45,<br>        “Company”: “Microsoft”,<br>        “Engineer”: false<br>    }<br>]</p>
+<p>// 读取其中John的公司名称</p>
+<p>var johnsCompany = members[1].Company;</p>
+<p>// 描述一次会议</p>
+<p>var conference = {<br>    “Conference”: “Future Marketing”,<br>    “Date”: “2012-6-1”,<br>    “Address”: “Beijing”,<br>    “Members”:<br>    [<br>        {<br>            “Name”: “Bob”,<br>            “Age”: 32,<br>            “Company”: “IBM”,<br>            “Engineer”: true<br>        },<br>        {<br>            “Name”: “John”,<br>            “Age”: 20,<br>            “Company”: “Oracle”,<br>            “Engineer”: false<br>        },<br>        {<br>            “Name”: “Henry”,<br>            “Age”: 45,<br>            “Company”: “Microsoft”,<br>            “Engineer”: false<br>        }<br>    ]<br>}</p>
+<p>// 读取参会者Henry是否工程师</p>
+<p>var henryIsAnEngineer = conference.Members[2].Engineer;<br>复制代码</p>
+<p>关于JSON，就说这么多，更多细节请在开发过程中查阅资料深入学习。</p>
+<p> 什么是JSONP？</p>
+<p>先说说JSONP是怎么产生的：</p>
+<p>其实网上关于JSONP的讲解有很多，但却千篇一律，而且云里雾里，对于很多刚接触的人来讲理解起来有些困难，小可不才，试着用自己的方式来阐释一下这个问题，看看是否有帮助。</p>
+<p>1、一个众所周知的问题，Ajax直接请求普通文件存在跨域无权限访问的问题，甭管你是静态页面、动态网页、web服务、WCF，只要是跨域请求，一律不准；</p>
+<p>2、不过我们又发现，Web页面上调用js文件时则不受是否跨域的影响（不仅如此，我们还发现凡是拥有”src”这个属性的标签都拥有跨域的能力，比如<script>、<img>、<iframe>）；</p>
+<p>3、于是可以判断，当前阶段如果想通过纯web端（ActiveX控件、服务端代理、属于未来的HTML5之Websocket等方式不算）跨域访问数据就只有一种可能，那就是在远程服务器上设法把数据装进js格式的文件里，供客户端调用和进一步处理；</p>
+<p>4、恰巧我们已经知道有一种叫做JSON的纯字符数据格式可以简洁的描述复杂数据，更妙的是JSON还被js原生支持，所以在客户端几乎可以随心所欲的处理这种格式的数据；</p>
+<p>5、这样子解决方案就呼之欲出了，web客户端通过与调用脚本一模一样的方式，来调用跨域服务器上动态生成的js格式文件（一般以JSON为后缀），显而易见，服务器之所以要动态生成JSON文件，目的就在于把客户端需要的数据装入进去。</p>
+<p>6、客户端在对JSON文件调用成功之后，也就获得了自己所需的数据，剩下的就是按照自己需求进行处理和展现了，这种获取远程数据的方式看起来非常像AJAX，但其实并不一样。</p>
+<p>7、为了便于客户端使用数据，逐渐形成了一种非正式传输协议，人们把它称作JSONP，该协议的一个要点就是允许用户传递一个callback参数给服务端，然后服务端返回数据时会将这个callback参数作为函数名来包裹住JSON数据，这样客户端就可以随意定制自己的函数来自动处理返回数据了。</p>
+<p>如果对于callback参数如何使用还有些模糊的话，我们后面会有具体的实例来讲解。</p>
+<p>JSONP的客户端具体实现：</p>
+<p>不管jQuery也好，extjs也罢，又或者是其他支持jsonp的框架，他们幕后所做的工作都是一样的，下面我来循序渐进的说明一下jsonp在客户端的实现：</p>
+<p>1、我们知道，哪怕跨域js文件中的代码（当然指符合web脚本安全策略的），web页面也是可以无条件执行的。</p>
+<p>远程服务器remoteserver.com根目录下有个remote.js文件代码如下：</p>
+<p>alert(‘我是远程文件’);<br>本地服务器localserver.com下有个jsonp.html页面代码如下：</p>
+<p>复制代码<br>&lt;!DOCTYPE html PUBLIC “-//W3C//DTD XHTML 1.0 Transitional//EN” “<a href="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;">http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</a></p>
+<p><html xmlns="http://www.w3.org/1999/xhtml"></p>
+<p><head><br>    <title></title><br>    <script type="text/javascript" src="http://remoteserver.com/remote.js"></script><br></p>
+<body>
+
+<p></p></body><br><br>复制代码<br>毫无疑问，页面将会弹出一个提示窗体，显示跨域调用成功。<p></p>
+<p>2、现在我们在jsonp.html页面定义一个函数，然后在远程remote.js中传入数据进行调用。</p>
+<p>jsonp.html页面代码如下：</p>
+<p>复制代码<br>&lt;!DOCTYPE html PUBLIC “-//W3C//DTD XHTML 1.0 Transitional//EN” “<a href="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;" target="_blank" rel="external">http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</a></p>
+<p><html xmlns="http://www.w3.org/1999/xhtml"></html></p>
+<p><head><br>    <title></title><br>    <script type="text/javascript"><br>    var localHandler = function(data){<br>        alert(‘我是本地函数，可以被跨域的remote.js文件调用，远程js带来的数据是：’ + data.result);<br>    };<br>    </script><br>    <script type="text/javascript" src="http://remoteserver.com/remote.js"></script><br></head></p>
+<body>
+
+<p></p></body><br><br>复制代码<br>remote.js文件代码如下：<p></p>
+<p>localHandler({“result”:”我是远程js带来的数据”});<br>运行之后查看结果，页面成功弹出提示窗口，显示本地函数被跨域的远程js调用成功，并且还接收到了远程js带来的数据。很欣喜，跨域远程获取数据的目的基本实现了，但是又一个问题出现了，我怎么让远程js知道它应该调用的本地函数叫什么名字呢？毕竟是jsonp的服务者都要面对很多服务对象，而这些服务对象各自的本地函数都不相同啊？我们接着往下看。</p>
+<p>3、聪明的开发者很容易想到，只要服务端提供的js脚本是动态生成的就行了呗，这样调用者可以传一个参数过去告诉服务端“我想要一段调用XXX函数的js代码，请你返回给我”，于是服务器就可以按照客户端的需求来生成js脚本并响应了。</p>
+<p>看jsonp.html页面的代码：</p>
+<p>复制代码<br>&lt;!DOCTYPE html PUBLIC “-//W3C//DTD XHTML 1.0 Transitional//EN” “<a href="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;" target="_blank" rel="external">http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</a></p>
+<p><html xmlns="http://www.w3.org/1999/xhtml"></html></p>
+<p><head><br>    <title></title><br>    <script type="text/javascript"><br>    // 得到航班信息查询结果后的回调函数<br>    var flightHandler = function(data){<br>        alert(‘你查询的航班结果是：票价 ‘ + data.price + ‘ 元，’ + ‘余票 ‘ + data.tickets + ‘ 张。’);<br>    };<br>    // 提供jsonp服务的url地址（不管是什么类型的地址，最终生成的返回值都是一段javascript代码）<br>    var url = “<a href="http://flightQuery.com/jsonp/flightResult.aspx?code=CA1998&amp;callback=flightHandler">http://flightQuery.com/jsonp/flightResult.aspx?code=CA1998&amp;callback=flightHandler</a>“;<br>    // 创建script标签，设置其属性<br>    var script = document.createElement(‘script’);<br>    script.setAttribute(‘src’, url);<br>    // 把script标签加入head，此时调用开始<br>    document.getElementsByTagName(‘head’)[0].appendChild(script);<br>    </script><br></head></p>
+<body>
+
+<p></p></body><br><br>复制代码<br>这次的代码变化比较大，不再直接把远程js文件写死，而是编码实现动态查询，而这也正是jsonp客户端实现的核心部分，本例中的重点也就在于如何完成jsonp调用的全过程。<p></p>
+<p>我们看到调用的url中传递了一个code参数，告诉服务器我要查的是CA1998次航班的信息，而callback参数则告诉服务器，我的本地回调函数叫做flightHandler，所以请把查询结果传入这个函数中进行调用。</p>
+<p>OK，服务器很聪明，这个叫做flightResult.aspx的页面生成了一段这样的代码提供给jsonp.html（服务端的实现这里就不演示了，与你选用的语言无关，说到底就是拼接字符串）：</p>
+<p>flightHandler({<br>    “code”: “CA1998”,<br>    “price”: 1780,<br>    “tickets”: 5<br>});<br>我们看到，传递给flightHandler函数的是一个json，它描述了航班的基本信息。运行一下页面，成功弹出提示窗口，jsonp的执行全过程顺利完成！</p>
+<p>4、到这里为止的话，相信你已经能够理解jsonp的客户端实现原理了吧？剩下的就是如何把代码封装一下，以便于与用户界面交互，从而实现多次和重复调用。</p>
+<p>什么？你用的是jQuery，想知道jQuery如何实现jsonp调用？好吧，那我就好人做到底，再给你一段jQuery使用jsonp的代码（我们依然沿用上面那个航班信息查询的例子，假定返回jsonp结果不变）：</p>
+<p>复制代码<br>&lt;!DOCTYPE html PUBLIC “-//W3C//DTD XHTML 1.0 Transitional//EN” “<a href="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;" target="_blank" rel="external">http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</a><br> <html xmlns="http://www.w3.org/1999/xhtml"><br> <head><br>     <title>Untitled Page</title><br>      &lt;script type=”text/javascript” src=jquery.min.js”&gt;<br>      <script type="text/javascript"><br>     jQuery(document).ready(function(){<br>        $.ajax({<br>             type: “get”,<br>             async: false,<br>             url: “<a href="http://flightQuery.com/jsonp/flightResult.aspx?code=CA1998">http://flightQuery.com/jsonp/flightResult.aspx?code=CA1998</a>“,<br>             dataType: “jsonp”,<br>             jsonp: “callback”,//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)<br>             jsonpCallback:”flightHandler”,//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写”?”，jQuery会自动为你处理数据<br>             success: function(json){<br>                 alert(‘您查询到航班信息：票价： ‘ + json.price + ‘ 元，余票： ‘ + json.tickets + ‘ 张。’);<br>             },<br>             error: function(){<br>                 alert(‘fail’);<br>             }<br>         });<br>     });<br>     </script><br>     </head><br>  <body><br>  </body><br> </html><br>复制代码<br>是不是有点奇怪？为什么我这次没有写flightHandler这个函数呢？而且竟然也运行成功了！哈哈，这就是jQuery的功劳了，jquery在处理jsonp类型的ajax时（还是忍不住吐槽，虽然jquery也把jsonp归入了ajax，但其实它们真的不是一回事儿），自动帮你生成回调函数并把数据取出来供success属性方法来调用，是不是很爽呀？</p>
+<p>好啦，写到这里，我已经无力再写下去，又困又累，得赶紧睡觉。朋友们要是看这不错，觉得有启发，给点个“推荐”呗！由于实在比较简单，所以就不再提供demo源码下载了。</p>
+<p> 4月20日下午的补充：</p>
+<p>没想到上了博客园的头条推荐。看到大家对这篇文章的认可和评论，还是很开心的，这里针对ajax与jsonp的异同再做一些补充说明：</p>
+<p>1、ajax和jsonp这两种技术在调用方式上“看起来”很像，目的也一样，都是请求一个url，然后把服务器返回的数据进行处理，因此jquery和ext等框架都把jsonp作为ajax的一种形式进行了封装；</p>
+<p>2、但ajax和jsonp其实本质上是不同的东西。ajax的核心是通过XmlHttpRequest获取非本页内容，而jsonp的核心则是动态添加<script>标签来调用服务器提供的js脚本。</p>
+<p>3、所以说，其实ajax与jsonp的区别不在于是否跨域，ajax通过服务端代理一样可以实现跨域，jsonp本身也不排斥同域的数据的获取。</p>
+<p>4、还有就是，jsonp是一种方式或者说非强制性协议，如同ajax一样，它也不一定非要用json格式来传递数据，如果你愿意，字符串都行，只不过这样不利于用jsonp提供公开服务。</p>
+<p>总而言之，jsonp不是ajax的一个特例，哪怕jquery等巨头把jsonp封装进了ajax，也不能改变着一点！</p>
+<p>注意：此文章属博主原创，转载请注明作者信息和原始链接，谢谢合作。</p>
+</script></p>
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://feijl.cn/2016/03/28/json和jsonp/" data-id="cirg90zr80003qsu7j7h4w2gw" class="article-share-link" data-share="baidu" data-title="json和jsonp">分享到</a>
+      
+
+      
+        <a href="http://feijl.cn/2016/03/28/json和jsonp/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/03/28/dubbo注解配置/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          dubbo注解配置
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/03/28/dubbo服务提供者官方启动方式/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">dubbo服务提供者官方启动方式</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2016/03/28/json和jsonp/" data-title="json和jsonp" data-url="http://feijl.cn/2016/03/28/json和jsonp/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/dubbo/">dubbo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/json/">json</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsp/">jsp</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/maven/">maven</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/springmvc/">springmvc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/其它/">其它</a><span class="category-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/03/28/dubbo注解配置/">dubbo注解配置</a>
+          </li>
+        
+          <li>
+            <a href="/2016/03/28/json和jsonp/">json和jsonp</a>
+          </li>
+        
+          <li>
+            <a href="/2016/03/28/dubbo服务提供者官方启动方式/">dubbo服务提供者官方启动方式</a>
+          </li>
+        
+          <li>
+            <a href="/2015/10/22/maven编译错误找不到符号/">maven编译错误找不到符号</a>
+          </li>
+        
+          <li>
+            <a href="/2015/09/20/springmvc4返回json数据的配置/">springmvc4返回json数据的配置</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://168love.cn" target="_blank">碧海听涛</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 feijl<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"feijl-cn"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>
+  function SetShareData(cmd, config) {
+    if (shareDataTitle && shareDataUrl) {
+      config.bdText = shareDataTitle;
+      config.bdUrl = shareDataUrl;
+    }
+    return config;
+  }
+  window._bd_share_config={
+    "common":{onBeforeClick: SetShareData},
+    "share":{"bdCustomStyle":"/css/bdshare.css"}
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>
