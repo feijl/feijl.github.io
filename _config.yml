@@ -82,4 +82,4 @@ theme: landscape-plus
 deploy:
   type: git
   repository: git@github.com:feijl/feijl.github.io.git
-  branch: gh-pages
+  branch: master
